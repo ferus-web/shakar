@@ -1,3 +1,3 @@
-import pkg/shakar/[optionals]
+import pkg/shakar/[optionals, flow]
 
-export optionals
+export optionals, flow
