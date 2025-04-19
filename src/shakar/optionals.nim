@@ -1,5 +1,6 @@
-## Syntactic sugar for `Option[T]`
+## Syntactic sugar for `Option[T]` and `Result[T]`
 import std/[options]
+import pkg/[results]
 
 func `*`*[T](opt: Option[T]): bool {.inline.} =
   ## This function returns `true` if `opt` contains a value
@@ -104,3 +105,44 @@ template applyThis*[T](opt: var Option[T], body: untyped) =
     body
 
     opt = some(this)
+
+func `*`*[T, E](res: Result[T, E]): bool {.inline.} =
+  ## This function returns `true` if `res` contains a value
+  ## and `false` otherwise.
+  ##
+  ## **See also**:
+  ## - `proc ![T, E](Result[T, E]): bool`_ to check if a `Result[T, E]` is empty.
+  runnableExamples:
+    var x = ok("Hallo Erde")
+    assert *x
+
+  isOk(res)
+
+func `!`*[T, E](res: Result[T, E]): bool {.inline.} =
+  ## This function returns `true` if `res` has an error
+  ## and `false` otherwise.
+  ##
+  ## **See also**:
+  ## - `proc *[T, E](Result[T, E]): bool`_ to check if a `Result[T, E]` contains a value.
+  runnableExamples:
+    var x = Result[void, string].err("Silly stupid error")
+    assert !x
+
+  isErr(res)
+
+template `&`*[T, E](opt: Result[T, E]): T =
+  ## This template can be used to get the value inside of a `Result[T, E]`.
+  ## It calls `get()` under the hood, so if the result has an error,
+  ## you'll get a similar error unless you check for this and abort beforehand.
+  ##
+  ## **See also**:
+  ## - `proc *[T, E](Result[T, E]): bool`_ to check if a `Result[T, E]` contains a value.
+  ## - `proc ![T, E](Result[T, E]): bool`_ to check if a `Result[T, E]` is empty.
+  runnableExamples:
+    var x = ok("Hello world")
+    assert &x == "Hello world"
+
+    var y = Result[int, string].err("Woops.")
+    assert &y == 1337 # This will fail as the optional is empty.
+
+  (opt.get())
