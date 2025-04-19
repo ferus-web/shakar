@@ -8,8 +8,6 @@ Shakkar means "sugar" in Hindi. :^)
 This library also aims to remove all the "sugar" files in all of the different Ferus projects and unify them under a single, easy-to-modify library.
 
 # basic usage
-Currently, Shakar only has support for Optional types. I do want to implement sugar for the [results](https://github.com/arnetheduck/nim-results) soon, though.
-
 ## optional types
 ```nim
 import std/options
